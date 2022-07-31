@@ -3,7 +3,7 @@ const path = require('path')
 const app = express()
 const {bots, playerRecord} = require('./data')
 const {shuffleArray} = require('./utils')
-const cors = require("cors")
+
 
 app.use(express.json()) 
 
@@ -22,7 +22,7 @@ app.get('/', function(req, res){
     res.sendFile(path.join(__dirname, './public/index.html'))
 })
 
-app.use(cors()); 
+
 app.use(express.static([path.join(__dirname, './public')]))
 
 
@@ -31,6 +31,7 @@ app.get('/api/robots', (req, res) => {
     try {
         res.status(200).send(botsArr)
     } catch (error) {
+        rollbar.error("Error Getting Bots", error)
         console.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
     }
