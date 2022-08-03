@@ -7,6 +7,8 @@ const {shuffleArray} = require('./utils')
 
 app.use(express.json()) 
 
+
+
 // include and initialize the rollbar library with your access token
 const Rollbar = require("rollbar");
 const rollbar = new Rollbar({
@@ -18,12 +20,12 @@ const rollbar = new Rollbar({
 // record a generic message and send it to Rollbar
 rollbar.log("Hello world!");
 
-app.get('/', function(req, res){
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'))
 })
 
+app.use(express.static('public'))
 
-app.use(express.static([path.join(__dirname, './public')]))
 
 
 
@@ -72,6 +74,7 @@ app.post('/api/duel', (req, res) => {
             res.status(200).send('You lost!')
         } else {
             playerRecord.losses++
+            rollbar.info(`Player has lost ${playerRecord.losses} times!`)
             res.status(200).send('You won!')
         }
     } catch (error) {
